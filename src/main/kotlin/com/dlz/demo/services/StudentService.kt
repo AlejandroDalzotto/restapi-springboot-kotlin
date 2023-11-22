@@ -1,7 +1,5 @@
 package com.dlz.demo.services
 
-import java.util.Optional
-
 interface StudentService<E, in ID> {
 
     fun getAll(): List<E>
