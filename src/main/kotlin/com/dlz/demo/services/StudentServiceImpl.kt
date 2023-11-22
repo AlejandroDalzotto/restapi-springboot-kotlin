@@ -1,8 +1,8 @@
 package com.dlz.demo.services
 
+import com.dlz.demo.exceptions.ResourceNotFoundException
 import com.dlz.demo.models.Student
 import com.dlz.demo.repositories.StudentRepository
-import jakarta.persistence.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -16,9 +16,9 @@ class StudentServiceImpl : StudentService<Student, Long> {
         return rep.findAll().filter { it.state ?: true }
     }
 
-    override fun getById(id: Long): Student? {
+    override fun getById(id: Long): Student {
         return rep.findById(id)
-            .orElse(null)
+            .orElseThrow { ResourceNotFoundException("Could not find student $id") }
     }
 
     override fun save(e: Student): Student {
@@ -26,18 +26,24 @@ class StudentServiceImpl : StudentService<Student, Long> {
     }
 
     override fun update(id: Long, e: Student): Student {
-        val student = rep.findById(id).orElseThrow { EntityNotFoundException("Student not found with id: $id")}
-
-        student.name = e.name
-        student.lastname = e.lastname
-        student.code = e.code
-        student.birthdate = e.birthdate
-
-        return student
+        return rep.findById(id)
+            .map { student ->
+                student.name = e.name
+                student.lastname = e.lastname
+                student.code = e.code
+                student.birthdate = e.birthdate
+                rep.save(student)
+            }
+            .orElseThrow {
+                ResourceNotFoundException("Could not find student $id")
+            }
     }
 
     override fun delete(id: Long): Boolean {
-        val student = rep.getReferenceById(id)
+        val student = rep.findById(id)
+            .orElseThrow {
+                ResourceNotFoundException("Could not find student $id")
+            }
         student.state = false
         return true
     }

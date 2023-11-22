@@ -1,22 +1,18 @@
-import jakarta.persistence.EntityNotFoundException
+package com.dlz.demo.exceptions
+
+import com.dlz.demo.payloads.ApiResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.RestControllerAdvice
 
-@ControllerAdvice
+@RestControllerAdvice
 class GlobalExceptionHandler {
-
-    @ExceptionHandler(Exception::class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    fun handleException(ex: Exception): ResponseEntity<String> {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado en el servidor")
-    }
-
-    @ExceptionHandler(EntityNotFoundException::class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    fun handleEntityNotFoundException(ex: EntityNotFoundException): ResponseEntity<String> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
+    @ExceptionHandler(ResourceNotFoundException::class)
+    fun resourceNotFoundHandler(ex: ResourceNotFoundException): ResponseEntity<ApiResponse> {
+        return ResponseEntity<ApiResponse>(
+            ApiResponse(ex.message ?: "Resource not found", false),
+            HttpStatus.NOT_FOUND
+        )
     }
 }

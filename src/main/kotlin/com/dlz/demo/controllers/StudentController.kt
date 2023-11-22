@@ -2,8 +2,10 @@ package com.dlz.demo.controllers
 
 import com.dlz.demo.models.Student
 import com.dlz.demo.services.StudentServiceImpl
+import jakarta.annotation.Nullable
 import java.util.Optional
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -24,26 +26,21 @@ class StudentController {
     @Autowired
     private lateinit var service: StudentServiceImpl
 
-    @GetMapping("/students")
+    @GetMapping("/students/")
     fun getAll() = service.getAll()
 
-    @GetMapping("/students/{id}")
-    fun getStudentById(@PathVariable id: Long): ResponseEntity<Student> {
-        val studentOptional: Student? = service.getById(id)
+    @GetMapping("/students/{id}/")
+    fun getStudentById(@PathVariable id: Long) = ResponseEntity.ok().body(service.getById(id))
 
-        return if (studentOptional != null) {
-            ResponseEntity.ok(studentOptional)
-        } else {
-            ResponseEntity.notFound().build()
-        }
+    @PostMapping("/students/")
+    fun save(@RequestBody student: Student) = ResponseEntity.status(HttpStatus.CREATED).body(service.save(student))
+
+    @PutMapping("/students/{id}/")
+    fun update(@PathVariable id: Long, @RequestBody student: Student) = ResponseEntity.ok().body(service.update(id, student))
+
+    @DeleteMapping("/students/{id}/")
+    fun delete(@PathVariable id: Long): ResponseEntity<Student> {
+        service.delete(id)
+        return ResponseEntity.ok().build()
     }
-
-    @PostMapping("/students")
-    fun save(@RequestBody student: Student) = service.save(student)
-
-    @PutMapping("/students/{id}")
-    fun update(@PathVariable id: Long, @RequestBody student: Student) = service.update(id, student)
-
-    @DeleteMapping("students/{id}")
-    fun delete(@PathVariable id: Long) = service.delete(id)
 }
