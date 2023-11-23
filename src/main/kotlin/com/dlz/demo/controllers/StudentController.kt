@@ -3,6 +3,7 @@ package com.dlz.demo.controllers
 import com.dlz.demo.models.Student
 import com.dlz.demo.payloads.StudentFromRequest
 import com.dlz.demo.services.StudentServiceImpl
+import com.dlz.demo.utils.calculateAge
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -37,6 +38,7 @@ class StudentController {
     fun save(@RequestBody s: StudentFromRequest): ResponseEntity<Any> {
         try {
             val birthdate = LocalDate.parse(s.birthdate.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            val studentAge = calculateAge(birthdate).toByte()
 
             val student = Student(
                 name = s.name,
@@ -44,7 +46,8 @@ class StudentController {
                 email = s.email,
                 code = s.code,
                 state = true,
-                birthdate = birthdate
+                birthdate = birthdate,
+                age = studentAge
             )
 
             val savedStudent = service.save(student)

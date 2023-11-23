@@ -21,5 +21,5 @@ data class StudentFromRequest(
     val code: Long,
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    val birthdate: LocalDate,
+    val birthdate: LocalDate
 )
