@@ -39,12 +39,11 @@ class StudentServiceImpl : StudentService<Student, Long> {
             }
     }
 
-    override fun delete(id: Long): Boolean {
+    override fun delete(id: Long) {
         val student = rep.findById(id)
             .orElseThrow {
                 ResourceNotFoundException("Could not find student $id")
             }
         student.state = false
-        return true
     }
 }

@@ -10,5 +10,5 @@ interface StudentService<E, in ID> {
 
     fun update(id: ID, e: E): E
 
-    fun delete(id: ID): Boolean
+    fun delete(id: ID)
 }
