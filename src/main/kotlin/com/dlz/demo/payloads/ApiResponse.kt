@@ -1,3 +1,8 @@
 package com.dlz.demo.payloads
 
-class ApiResponse(val message: String = "", val success: Boolean = true)
+data class ApiResponse(
+    val message: String?,
+    val success: Boolean = false,
+    val reasons: Map<String, String?>? = null,
+    val status: Int
+)

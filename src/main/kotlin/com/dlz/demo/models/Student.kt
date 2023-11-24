@@ -1,5 +1,6 @@
 package com.dlz.demo.models
 
+import com.dlz.demo.payloads.StudentDto
 import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email
@@ -15,38 +16,50 @@ data class Student(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    @Column(length = 16)
-    @NotBlank(message = "Name is mandatory")
-    @NotNull
+    @Column
     var name: String = "",
 
     @Column
-    @NotBlank(message = "Lastname is mandatory")
-    @NotNull
     var lastname: String = "",
 
     @Column
-    @Email
-    @NotBlank(message = "Email is mandatory")
-    @NotNull
     var email: String = "",
 
     @Column
-    @NotBlank(message = "Code is mandatory")
-    @NotNull
     var code: Long = 0,
 
-    @Column(nullable = true)
-    @NotBlank(message = "Birthdate is mandatory")
+    @Column(nullable = false)
     @JsonFormat(pattern = "dd-MM-yyyy")
-    var birthdate: LocalDate? = null,
+    var birthdate: LocalDate,
 
     @Column
-    @NotNull
     var state: Boolean = true,
 
     @Column
-    @NotNull
-    @Min(17, message = "The student does not meet the required age")
     var age: Byte = 0
 )
+
+// Utilities
+
+fun List<Student>.toListOfStudentDto(): List<StudentDto> {
+    return this.map {
+        StudentDto(
+            name = it.name,
+            lastname = it.lastname,
+            email = it.email,
+            code = it.code,
+            birthdate = it.birthdate
+        )
+    }
+}
+
+fun Student.toStudentDto(): StudentDto {
+    return StudentDto(
+        name = this.name,
+        lastname = this.lastname,
+        email = this.email,
+        code = this.code,
+        birthdate = this.birthdate
+    )
+}
+

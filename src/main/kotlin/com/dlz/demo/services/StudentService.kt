@@ -4,7 +4,7 @@ interface StudentService<E, in ID> {
 
     fun getAll(): List<E>
 
-    fun getById(id: ID): E?
+    fun getById(id: ID): E
 
     fun save(e: E): E
 
